@@ -1,3 +1,18 @@
+server:
+  port: 8082
+
 spring:
-  application:
-    name: tenant-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/tenants_db
+    username: tenant
+    password: tenant123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: INFO

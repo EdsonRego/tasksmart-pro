@@ -5,6 +5,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/backend/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/tenant-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/checklist-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/workorder-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/notification-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/asset-service/pom.xml" />
       </list>
     </option>
   </component>

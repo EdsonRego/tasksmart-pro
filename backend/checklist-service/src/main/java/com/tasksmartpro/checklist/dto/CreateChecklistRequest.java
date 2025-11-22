@@ -1,0 +1,12 @@
+package com.tasksmartpro.checklist.dto;
+
+import lombok.*;
+
+import java.util.List;
+
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class CreateChecklistRequest {
+    private Long tenantId;
+    private String name;
+    private List<String> itemDescriptions; // itens sem status
+}
