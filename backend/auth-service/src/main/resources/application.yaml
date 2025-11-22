@@ -1,3 +1,87 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /auth
+
 spring:
   application:
     name: auth-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tasksmart_db
+    username: tasksmart
+    password: tasksmart123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  # Caso futuramente use Mongo para tokens/sessions
+  data:
+    mongodb:
+      uri: mongodb://tasksmart:tasksmart123@localhost:27017/?authSource=admin
+      database: tasksmart_mongo
+      auto-index-creation: true
+
+  # Caso use Redis (rate limit, tokens blacklist, etc.)
+  redis:
+    host: localhost
+    port: 6379
+
+# Kafka (opcional)
+kafka:
+  bootstrap-servers: localhost:9092
+  security:
+    protocol: PLAINTEXT
+
+
+# JWT CONFIG (muito importante)
+jwt:
+  secret: "CHANGE-THIS-TO-A-VERY-STRONG-SECRET-KEY-256" # substituir depois
+  expiration: 3600000   # 1 hora em ms
+  refresh-expiration: 604800000  # 7 dias em ms
+
+
+# CORS para o Angular local
+cors:
+  allowed-origins: "http://localhost:4200"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
+
+
+# Actuator (monitoramento)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,env,beans"
+  endpoint:
+    health:
+      show-details: always
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG   # se quiser ver queries, mudar p/ DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
