@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for asset-service" enabled="true">
+      <profile name="Annotation profile for inventory-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -10,6 +10,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
         <module name="auth-service" />
+        <module name="inventory-service" />
         <module name="tenant-service" />
         <module name="gateway-service" />
         <module name="checklist-service" />
@@ -25,6 +26,7 @@
       <module name="auth-service" options="-parameters" />
       <module name="checklist-service" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
+      <module name="inventory-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
       <module name="tenant-service" options="-parameters" />
       <module name="workorder-service" options="-parameters" />

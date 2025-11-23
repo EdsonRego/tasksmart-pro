@@ -2,9 +2,9 @@ version: "3.9"
 
 services:
 
-  # =======================
-  # POSTGRES - AUTH SERVICE
-  # =======================
+  # =====================================================================
+  # AUTH-SERVICE DATABASE
+  # =====================================================================
   auth-db:
     image: postgres:16
     container_name: auth-db
@@ -19,9 +19,9 @@ services:
     networks:
       - tasksmart-net
 
-  # =========================
-  # POSTGRES - TENANT SERVICE
-  # =========================
+  # =====================================================================
+  # TENANT-SERVICE DATABASE
+  # =====================================================================
   tenant-db:
     image: postgres:16
     container_name: tenant-db
@@ -36,9 +36,77 @@ services:
     networks:
       - tasksmart-net
 
-  # =======================
-  # MONGO - CHECKLIST
-  # =======================
+  # =====================================================================
+  # WORKORDER-SERVICE DATABASE
+  # =====================================================================
+  workorder-db:
+    image: postgres:16
+    container_name: workorder-db
+    environment:
+      POSTGRES_USER: workorder
+      POSTGRES_PASSWORD: work123
+      POSTGRES_DB: workorder_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - workorder_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart-net
+
+  # =====================================================================
+  # NOTIFICATION-SERVICE DATABASE
+  # =====================================================================
+  notification-db:
+    image: postgres:16
+    container_name: notification-db
+    environment:
+      POSTGRES_USER: notification
+      POSTGRES_PASSWORD: notif123
+      POSTGRES_DB: notification_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - notification_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart-net
+
+  # =====================================================================
+  # ASSET-SERVICE DATABASE
+  # =====================================================================
+  asset-db:
+    image: postgres:16
+    container_name: asset-db
+    environment:
+      POSTGRES_USER: asset
+      POSTGRES_PASSWORD: asset123
+      POSTGRES_DB: asset_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - asset_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart-net
+
+  # =====================================================================
+  # INVENTORY-SERVICE DATABASE
+  # =====================================================================
+  inventory-db:
+    image: postgres:16
+    container_name: inventory-db
+    environment:
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory123
+      POSTGRES_DB: inventory_db
+    ports:
+      - "5438:5432"
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart-net
+
+  # =====================================================================
+  # CHECKLIST-SERVICE DATABASE (MONGO)
+  # =====================================================================
   mongo:
     image: mongo:7
     container_name: checklist-mongo
@@ -53,9 +121,6 @@ services:
     networks:
       - tasksmart-net
 
-  # =======================
-  # MONGO EXPRESS (UI)
-  # =======================
   mongo-express:
     image: mongo-express
     container_name: mongo-express
@@ -66,14 +131,14 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:root123@mongo:27017/
     ports:
       - "8085:8081"
-    networks:
-      - tasksmart-net
     depends_on:
       - mongo
+    networks:
+      - tasksmart-net
 
-  # =======================
-  # REDIS - FUTURO NOTIF.
-  # =======================
+  # =====================================================================
+  # REDIS (used by notification-service)
+  # =====================================================================
   redis:
     image: redis:7
     container_name: redis-cache
@@ -82,9 +147,9 @@ services:
     networks:
       - tasksmart-net
 
-  # =======================
-  # KAFKA + ZOOKEEPER
-  # =======================
+  # =====================================================================
+  # KAFKA + ZOOKEEPER (for future asynchronous events)
+  # =====================================================================
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -106,15 +171,17 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: |
+        PLAINTEXT://kafka:9092,
+        PLAINTEXT_HOST://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
     networks:
       - tasksmart-net
 
-  # =======================
-  # PGADMIN
-  # =======================
+  # =====================================================================
+  # PGADMIN - Manage All Postgres Instances
+  # =====================================================================
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -123,23 +190,31 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin123
     ports:
       - "5050:80"
-    networks:
-      - tasksmart-net
     depends_on:
       - auth-db
       - tenant-db
+      - workorder-db
+      - notification-db
+      - asset-db
+      - inventory-db
+    networks:
+      - tasksmart-net
 
-# =======================
+# =====================================================================
 # VOLUMES
-# =======================
+# =====================================================================
 volumes:
   auth_data:
   tenant_data:
+  workorder_data:
+  notification_data:
+  asset_data:
+  inventory_data:
   mongo_data:
 
-# =======================
+# =====================================================================
 # NETWORK
-# =======================
+# =====================================================================
 networks:
   tasksmart-net:
     driver: bridge
