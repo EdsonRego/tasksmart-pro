@@ -2,10 +2,13 @@ server:
   port: 8084
 
 spring:
+  application:
+    name: workorder-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5435/workorders_db
-    username: workorder
-    password: workorder123
+    url: jdbc:postgresql://${WORKORDER_DB_HOST:localhost}:${WORKORDER_DB_PORT:5435}/${WORKORDER_DB_NAME:workorder_db}
+    username: ${WORKORDER_DB_USER:workorder}
+    password: ${WORKORDER_DB_PASS:workorder123}
 
   jpa:
     hibernate:

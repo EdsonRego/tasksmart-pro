@@ -6,10 +6,9 @@ spring:
     name: inventory-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5437/inventory_db
-    username: inventory_user
-    password: inventory_pass
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${INVENTORY_DB_HOST:localhost}:${INVENTORY_DB_PORT:5438}/${INVENTORY_DB_NAME:inventory_db}
+    username: ${INVENTORY_DB_USER:inventory}
+    password: ${INVENTORY_DB_PASS:inventory123}
 
   jpa:
     hibernate:
@@ -17,4 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    show-sql: true
+
+logging:
+  level:
+    root: INFO

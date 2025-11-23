@@ -1,0 +1,23 @@
+package com.tasksmartpro.maintenanceplan.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "plan_asset_link")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
+public class PlanAssetLink {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long tenantId;
+
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private MaintenancePlan plan;
+
+    private Long assetId; // integração futura
+}

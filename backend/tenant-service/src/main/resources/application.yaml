@@ -2,10 +2,14 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: tenant-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5434/tenants_db
-    username: tenant
-    password: tenant123
+    url: jdbc:postgresql://${TENANT_DB_HOST:localhost}:${TENANT_DB_PORT:5434}/${TENANT_DB_NAME:tenants_db}
+    username: ${TENANT_DB_USER:tenant}
+    password: ${TENANT_DB_PASS:tenant123}
+
   jpa:
     hibernate:
       ddl-auto: update

@@ -211,6 +211,7 @@ volumes:
   asset_data:
   inventory_data:
   mongo_data:
+  maintenance_plan_data:
 
 # =====================================================================
 # NETWORK
@@ -218,3 +219,20 @@ volumes:
 networks:
   tasksmart-net:
     driver: bridge
+
+  # =====================================================================
+  # MAINTENANCE-PLAN-SERVICE DATABASE
+  # =====================================================================
+  maintenance-plan-db:
+    image: postgres:16
+    container_name: maintenance-plan-db
+    environment:
+      POSTGRES_USER: ${MP_DB_USER}
+      POSTGRES_PASSWORD: ${MP_DB_PASS}
+      POSTGRES_DB: ${MP_DB_NAME}
+    ports:
+      - "5439:5432"
+    volumes:
+      - maintenance_plan_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart-net

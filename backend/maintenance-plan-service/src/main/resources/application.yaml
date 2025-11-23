@@ -1,0 +1,22 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: maintenance-plan-service
+
+  datasource:
+    url: jdbc:postgresql://${MP_DB_HOST:localhost}:${MP_DB_PORT:5439}/${MP_DB_NAME:maintenance_plan_db}
+    username: ${MP_DB_USER:maintenance}
+    password: ${MP_DB_PASS:maintenance123}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    root: INFO

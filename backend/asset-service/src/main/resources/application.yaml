@@ -2,10 +2,13 @@ server:
   port: 8086
 
 spring:
+  application:
+    name: asset-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5437/assets_db
-    username: asset
-    password: asset123
+    url: jdbc:postgresql://${ASSET_DB_HOST:localhost}:${ASSET_DB_PORT:5437}/${ASSET_DB_NAME:asset_db}
+    username: ${ASSET_DB_USER:asset}
+    password: ${ASSET_DB_PASS:asset123}
 
   jpa:
     hibernate:

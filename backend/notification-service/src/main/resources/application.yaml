@@ -2,10 +2,13 @@ server:
   port: 8085
 
 spring:
+  application:
+    name: notification-service
+
   datasource:
     url: jdbc:postgresql://${NOTIFICATION_DB_HOST:localhost}:${NOTIFICATION_DB_PORT:5436}/${NOTIFICATION_DB_NAME:notification_db}
-    username: ${NOTIFICATION_DB_USERNAME:notification}
-    password: ${NOTIFICATION_DB_PASSWORD:notification123}
+    username: ${NOTIFICATION_DB_USER:notification}
+    password: ${NOTIFICATION_DB_PASS:notification123}
 
   jpa:
     hibernate:
@@ -13,25 +16,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+    username: ${MAIL_USERNAME:dummy}
+    password: ${MAIL_PASSWORD:dummy}
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: notification-service
-      auto-offset-reset: earliest
 
 kafka:
   enabled: true
+
+logging:
+  level:
+    root: INFO
