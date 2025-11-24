@@ -2,35 +2,49 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for maintenance-plan-service" enabled="true">
+      <profile name="Annotation profile for integration-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
+        <module name="tenant-service" />
+        <module name="checklist-service" />
+        <module name="notification-service" />
+        <module name="document-service" />
+        <module name="workorder-service" />
+        <module name="integration-service" />
         <module name="maintenance-plan-service" />
+        <module name="meter-reading-service" />
         <module name="auth-service" />
         <module name="inventory-service" />
-        <module name="tenant-service" />
         <module name="gateway-service" />
-        <module name="checklist-service" />
+        <module name="audit-log-service" />
+        <module name="report-service" />
         <module name="asset-service" />
-        <module name="notification-service" />
-        <module name="workorder-service" />
+        <module name="user-profile-service" />
+        <module name="scheduling-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="asset-service" options="-parameters" />
+      <module name="audit-log-service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="checklist-service" options="-parameters" />
+      <module name="document-service" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
+      <module name="integration-service" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
       <module name="maintenance-plan-service" options="-parameters" />
+      <module name="meter-reading-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
+      <module name="report-service" options="-parameters" />
+      <module name="scheduling-service" options="-parameters" />
       <module name="tenant-service" options="-parameters" />
+      <module name="user-profile-service" options="-parameters" />
       <module name="workorder-service" options="-parameters" />
     </option>
   </component>

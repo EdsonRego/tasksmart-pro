@@ -1,0 +1,27 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: integration-service
+
+  datasource:
+    url: jdbc:postgresql://${INTEGRATION_DB_HOST:localhost}:${INTEGRATION_DB_PORT:5439}/${INTEGRATION_DB_NAME:integration_db}
+    username: ${INTEGRATION_DB_USER:integration}
+    password: ${INTEGRATION_DB_PASS:integration123}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    enabled: true
+
+logging:
+  level:
+    root: INFO

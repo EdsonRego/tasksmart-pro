@@ -1,0 +1,26 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: document-service
+
+  datasource:
+    url: jdbc:postgresql://${DOC_DB_HOST:localhost}:${DOC_DB_PORT:5441}/${DOC_DB_NAME:documents_db}
+    username: ${DOC_DB_USER:documents}
+    password: ${DOC_DB_PASS:documents123}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+storage:
+  path: ${DOC_STORAGE_PATH:./storage/documents}
+
+logging:
+  level:
+    root: INFO

@@ -1,0 +1,11 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: report-service
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.openfeign: INFO

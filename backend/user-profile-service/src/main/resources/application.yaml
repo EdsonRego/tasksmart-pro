@@ -1,0 +1,25 @@
+server:
+  port: 8093
+
+spring:
+  application:
+    name: user-profile-service
+
+  datasource:
+    url: jdbc:postgresql://${USERPROFILE_DB_HOST:localhost}:${USERPROFILE_DB_PORT:5440}/${USERPROFILE_DB_NAME:user_profile_db}
+    username: ${USERPROFILE_DB_USER:userprofile}
+    password: ${USERPROFILE_DB_PASS:userprofile123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+logging:
+  level:
+    root: INFO

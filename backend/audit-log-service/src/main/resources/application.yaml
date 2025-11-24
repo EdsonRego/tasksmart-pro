@@ -1,0 +1,19 @@
+server:
+  port: 8094
+
+spring:
+  application:
+    name: audit-log-service
+
+  data:
+    mongodb:
+      host: ${AUDIT_MONGO_HOST:localhost}
+      port: ${AUDIT_MONGO_PORT:27017}
+      database: ${AUDIT_MONGO_DB:audit_logs_db}
+      username: ${AUDIT_MONGO_USERNAME:root}
+      password: ${AUDIT_MONGO_PASSWORD:root123}
+      authentication-database: admin
+
+logging:
+  level:
+    root: INFO
