@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+
+  auth-service:
+    build:
+      context: ../backend/auth-service
+      dockerfile: Dockerfile
+    container_name: ts-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-auth
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - tasksmart
+
+  user-service:
+    build:
+      context: ../backend/user-service
+      dockerfile: Dockerfile
+    container_name: ts-user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-auth
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8082:8082"
+    networks:
+      - tasksmart
+
+  gateway-service:
+    build:
+      context: ../backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: ts-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-auth
+      AUTH_SERVICE_URL: http://auth-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+    depends_on:
+      - auth-service
+      - user-service
+    ports:
+      - "8080:8080"
+    networks:
+      - tasksmart
+
+  notification-service:
+    build:
+      context: ../backend/notification-service
+      dockerfile: Dockerfile
+    container_name: ts-notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-auth
+      SMTP_HOST: smtp.example.com
+      SMTP_USER: test@example.com
+      SMTP_PASS: 123456
+    depends_on:
+      - auth-service
+      - user-service
+    ports:
+      - "8086:8086"
+    networks:
+      - tasksmart
+
+networks:
+  tasksmart:
+    external: true

@@ -1,0 +1,205 @@
+version: "3.9"
+
+services:
+
+  # ============================================
+  # INFRAESTRUTURA BASE
+  # ============================================
+
+  postgres:
+    image: postgres:16
+    container_name: ts-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_pass
+      POSTGRES_DB: tasksmart
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tasksmart
+
+  mongo:
+    image: mongo:7
+    container_name: ts-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - tasksmart
+
+  redis:
+    image: redis:7
+    container_name: ts-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - tasksmart
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: ts-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - tasksmart
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: ts-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - tasksmart
+
+  # ============================================
+  # MICROSERVIÇOS ESSENCIAIS
+  # ============================================
+
+  gateway-service:
+    build: ../backend/gateway-service
+    container_name: ts-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    ports:
+      - "8080:8080"
+    networks:
+      - tasksmart
+
+  auth-service:
+    build: ../backend/auth-service
+    container_name: ts-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - tasksmart
+
+  user-service:
+    build: ../backend/user-service
+    container_name: ts-user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    networks:
+      - tasksmart
+
+  work-order-service:
+    build: ../backend/work-order-service
+    container_name: ts-work-order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - tasksmart
+
+  file-storage-service:
+    build: ../backend/file-storage-service
+    container_name: ts-file-storage-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DB: filestorage
+    networks:
+      - tasksmart
+
+  analytics-service:
+    build: ../backend/analytics-service
+    container_name: ts-analytics-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - tasksmart
+
+  notification-service:
+    build: ../backend/notification-service
+    container_name: ts-notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      SMTP_HOST: smtp.example.com
+      SMTP_USER: test@example.com
+      SMTP_PASS: 123456
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - tasksmart
+
+  billing-service:
+    build: ../backend/billing-service
+    container_name: ts-billing-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    networks:
+      - tasksmart
+
+  integration-service:
+    build: ../backend/integration-service
+    container_name: ts-integration-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    networks:
+      - tasksmart
+
+  admin-service:
+    build: ../backend/admin-service
+    container_name: ts-admin-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    networks:
+      - tasksmart
+
+  reporting-service:
+    build: ../backend/reporting-service
+    container_name: ts-reporting-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+    networks:
+      - tasksmart
+
+  event-router-service:
+    build: ../backend/event-router-service
+    container_name: ts-event-router-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - tasksmart
+
+  config-service:
+    build: ../backend/config-service
+    container_name: ts-config-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-full
+      CONFIG_STORAGE_PATH: /config-storage
+    volumes:
+      - config_storage:/config-storage
+    networks:
+      - tasksmart
+
+volumes:
+  postgres_data:
+  mongo_data:
+  config_storage:
+
+networks:
+  tasksmart:
+    external: true

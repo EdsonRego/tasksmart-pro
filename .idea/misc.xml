@@ -20,6 +20,8 @@
         <option value="$PROJECT_DIR$/backend/user-profile-service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/audit-log-service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/integration-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/file-storage-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/analytics-service/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKER:kafka:9092}
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}
+
+messaging:
+  events:
+    workorders: "workorders.events"
+    notifications: "notifications.events"
+    analytics: "analytics.events"

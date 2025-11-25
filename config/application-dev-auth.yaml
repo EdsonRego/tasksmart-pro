@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:tasksmart}
+    username: ${DB_USERNAME:dev_user}
+    password: ${DB_PASSWORD:dev_pass}
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}
+
+auth:
+  jwt:
+    secret: "dev-secret-key"
+    expiration: 86400000  # 1 dia

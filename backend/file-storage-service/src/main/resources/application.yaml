@@ -1,0 +1,29 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name: file-storage-service
+
+  datasource:
+    url: jdbc:postgresql://${FILE_DB_HOST:localhost}:${FILE_DB_PORT:5440}/${FILE_DB_NAME:file_storage_db}
+    username: ${FILE_DB_USER:fileuser}
+    password: ${FILE_DB_PASS:filepass}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+file-storage:
+  root-path: ${FILE_STORAGE_PATH:./uploaded-files}  # ambiente dev
+  # futuro:
+  # s3-bucket: ${S3_BUCKET:tasksmart-files}
+  # s3-region: ${S3_REGION:us-east-1}
+
+logging:
+  level:
+    root: INFO

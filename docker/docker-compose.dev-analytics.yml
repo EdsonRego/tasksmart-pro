@@ -1,0 +1,110 @@
+version: "3.9"
+
+services:
+
+  auth-service:
+    build:
+      context: ../backend/auth-service
+      dockerfile: Dockerfile
+    container_name: ts-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-analytics
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - tasksmart
+
+  user-service:
+    build:
+      context: ../backend/user-service
+      dockerfile: Dockerfile
+    container_name: ts-user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-analytics
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+    networks:
+      - tasksmart
+
+  work-order-service:
+    build:
+      context: ../backend/work-order-service
+      dockerfile: Dockerfile
+    container_name: ts-work-order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-analytics
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+    networks:
+      - tasksmart
+
+  analytics-service:
+    build:
+      context: ../backend/analytics-service
+      dockerfile: Dockerfile
+    container_name: ts-analytics-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-analytics
+      WORK_ORDER_URL: http://work-order-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+    depends_on:
+      - work-order-service
+      - user-service
+    ports:
+      - "8085:8085"
+    networks:
+      - tasksmart
+
+  gateway-service:
+    build:
+      context: ../backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: ts-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-analytics
+      ANALYTICS_SERVICE_URL: http://analytics-service:8085
+      WORK_ORDER_SERVICE_URL: http://work-order-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+      AUTH_SERVICE_URL: http://auth-service:8081
+    depends_on:
+      - analytics-service
+      - work-order-service
+      - user-service
+      - auth-service
+    ports:
+      - "8080:8080"
+    networks:
+      - tasksmart
+
+networks:
+  tasksmart:
+    external: true

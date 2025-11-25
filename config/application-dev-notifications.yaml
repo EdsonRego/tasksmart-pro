@@ -1,0 +1,25 @@
+spring:
+  mail:
+    host: ${SMTP_HOST:smtp.example.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:test@example.com}
+    password: ${SMTP_PASS:123456}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}
+
+notification:
+  users:
+    endpoint: ${USER_SERVICE_URL:http://localhost:8082}
+  workorders:
+    endpoint: ${WORK_ORDER_URL:http://localhost:8083}

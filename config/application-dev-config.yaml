@@ -1,0 +1,14 @@
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}
+
+config:
+  storage:
+    path: ${CONFIG_STORAGE_PATH:/config-storage}
+
+security:
+  auth:
+    endpoint: ${AUTH_SERVICE_URL:http://localhost:8081}

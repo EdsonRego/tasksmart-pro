@@ -1,0 +1,30 @@
+server:
+  port: 8093
+
+spring:
+  application:
+    name: analytics-service
+
+  datasource:
+    url: jdbc:postgresql://${ANALYTICS_DB_HOST:localhost}:${ANALYTICS_DB_PORT:5441}/${ANALYTICS_DB_NAME:analytics_db}
+    username: ${ANALYTICS_DB_USER:analytics}
+    password: ${ANALYTICS_DB_PASS:analytics123}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 5000
+
+logging:
+  level:
+    root: INFO

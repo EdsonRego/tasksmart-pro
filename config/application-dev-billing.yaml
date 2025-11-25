@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:tasksmart}
+    username: ${DB_USERNAME:dev_user}
+    password: ${DB_PASSWORD:dev_pass}
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}
+
+billing:
+  users:
+    endpoint: ${USER_SERVICE_URL:http://localhost:8082}
+  workorders:
+    endpoint: ${WORK_ORDER_URL:http://localhost:8083}

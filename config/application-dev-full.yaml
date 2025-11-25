@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:tasksmart}
+    username: ${DB_USERNAME:dev_user}
+    password: ${DB_PASSWORD:dev_pass}
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/filestorage
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: ${SERVER_PORT:0}

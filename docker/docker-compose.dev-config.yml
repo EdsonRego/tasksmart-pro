@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+
+  config-service:
+    build:
+      context: ../backend/config-service
+      dockerfile: Dockerfile
+    container_name: ts-config-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-config
+      CONFIG_STORAGE_PATH: /config-storage
+    volumes:
+      - config_storage:/config-storage
+    ports:
+      - "8092:8092"
+    networks:
+      - tasksmart
+
+  auth-service:
+    build:
+      context: ../backend/auth-service
+      dockerfile: Dockerfile
+    container_name: ts-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-config
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - tasksmart
+
+  gateway-service:
+    build:
+      context: ../backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: ts-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-config
+      CONFIG_SERVICE_URL: http://config-service:8092
+      AUTH_SERVICE_URL: http://auth-service:8081
+    depends_on:
+      - config-service
+      - auth-service
+    ports:
+      - "8080:8080"
+    networks:
+      - tasksmart
+
+networks:
+  tasksmart:
+    external: true
+
+volumes:
+  config_storage:

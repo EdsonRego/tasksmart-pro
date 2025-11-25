@@ -1,0 +1,170 @@
+version: "3.9"
+
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: ts-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - tasksmart
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: ts-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - tasksmart
+
+  auth-service:
+    build:
+      context: ../backend/auth-service
+      dockerfile: Dockerfile
+    container_name: ts-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - tasksmart
+
+  user-service:
+    build:
+      context: ../backend/user-service
+      dockerfile: Dockerfile
+    container_name: ts-user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+    networks:
+      - tasksmart
+
+  work-order-service:
+    build:
+      context: ../backend/work-order-service
+      dockerfile: Dockerfile
+    container_name: ts-work-order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tasksmart
+      DB_USERNAME: dev_user
+      DB_PASSWORD: dev_pass
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8083:8083"
+    networks:
+      - tasksmart
+
+  event-router-service:
+    build:
+      context: ../backend/event-router-service
+      dockerfile: Dockerfile
+    container_name: ts-event-router-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      KAFKA_BROKER: kafka:9092
+      WORK_ORDER_URL: http://work-order-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+      NOTIFICATION_SERVICE_URL: http://notification-service:8086
+      ANALYTICS_SERVICE_URL: http://analytics-service:8085
+    depends_on:
+      - kafka
+      - work-order-service
+      - notification-service
+      - analytics-service
+    ports:
+      - "8091:8091"
+    networks:
+      - tasksmart
+
+  analytics-service:
+    build:
+      context: ../backend/analytics-service
+      dockerfile: Dockerfile
+    container_name: ts-analytics-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      KAFKA_BROKER: kafka:9092
+      WORK_ORDER_URL: http://work-order-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+    depends_on:
+      - kafka
+      - work-order-service
+    ports:
+      - "8085:8085"
+    networks:
+      - tasksmart
+
+  notification-service:
+    build:
+      context: ../backend/notification-service
+      dockerfile: Dockerfile
+    container_name: ts-notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      SMTP_HOST: smtp.example.com
+      SMTP_USER: test@example.com
+      SMTP_PASS: 123456
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+    ports:
+      - "8086:8086"
+    networks:
+      - tasksmart
+
+  gateway-service:
+    build:
+      context: ../backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: ts-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-messaging
+      EVENT_ROUTER_URL: http://event-router-service:8091
+      AUTH_SERVICE_URL: http://auth-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+      WORK_ORDER_SERVICE_URL: http://work-order-service:8083
+    depends_on:
+      - event-router-service
+    ports:
+      - "8080:8080"
+    networks:
+      - tasksmart
+
+networks:
+  tasksmart:
+    external: true
